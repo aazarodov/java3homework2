@@ -8,12 +8,20 @@ public class DBController {
 
     public DBController() {}
 
+    /**
+     * Метод устанавливает соединение с базой данных
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void connect() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         connection = DriverManager.getConnection("jdbc:sqlite:database.db");
         statement = connection.createStatement();
     }
 
+    /**
+     * Метод разрывает соединение с базой данных
+     */
     public void disconnect() {
         try {
             statement.close();
@@ -27,6 +35,10 @@ public class DBController {
         }
     }
 
+    /**
+     * Метод создает таблицу products в базе данных
+     * @throws SQLException
+     */
     public void createTableProducts() throws SQLException {
         statement.execute("CREATE TABLE IF NOT EXISTS products (\n" +
                 "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
@@ -36,15 +48,23 @@ public class DBController {
                 ");");
     }
 
+    /**
+     * Метод удаляет таблицу products в базе данных
+     * @throws SQLException
+     */
     public void dropTableProducts() throws SQLException {
         statement.execute("DROP TABLE IF EXISTS products;");
     }
 
+    /**
+     * Метод заполняет данными таблицу products
+     * @throws SQLException
+     */
     public void fillTableProducts() throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO products (prodid, title, cost) VALUES (?, ?, ?);");
         connection.setAutoCommit(false);
         for (int i = 1; i <= 10000; i++) {
-            ps.setString(1, "id_товар" + i);
+            ps.setString(1, "id_товар " + i);
             ps.setString(2, "товар" + i);
             ps.setInt(3, i * 10);
             ps.addBatch();
@@ -53,6 +73,11 @@ public class DBController {
         connection.setAutoCommit(true);
     }
 
+    /**
+     * Метод позволяет узнать цену товара по его имени, либо выводит сообщение "Такого товара нет" если товара не в базе
+     * @param title
+     * @throws SQLException
+     */
     public void getCostByTitle(String title) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("SELECT cost FROM products WHERE title = ?");
         ps.setString(1, title);
@@ -65,6 +90,12 @@ public class DBController {
         }
     }
 
+    /**
+     * Метод позволяет изменять цену товара по его имени
+     * @param title
+     * @param cost
+     * @throws SQLException
+     */
     public void changeCostByTitle(String title, int cost) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("UPDATE products SET cost = ? WHERE title = ?");
         ps.setInt(1, cost);
@@ -72,10 +103,16 @@ public class DBController {
         ps.execute();
     }
 
-    public void getProductByIntervalId(int idStart, int idEnd) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("SELECT prodid, title, cost FROM products WHERE id BETWEEN ? AND ?");
-        ps.setInt(1, idStart);
-        ps.setInt(2, idEnd);
+    /**
+     * Метод позволяет вывести товары в заданном ценовом диапазоне
+     * @param costStart
+     * @param costEnd
+     * @throws SQLException
+     */
+    public void getProductByIntervalId(int costStart, int costEnd) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT prodid, title, cost FROM products WHERE cost BETWEEN ? AND ?");
+        ps.setInt(1, costStart);
+        ps.setInt(2, costEnd);
         ps.execute();
         ResultSet rs = ps.getResultSet();
         System.out.println("prodid  title   cost");

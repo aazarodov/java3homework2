@@ -15,7 +15,6 @@ public class App {
             dbController.dropTableProducts();
             dbController.createTableProducts();
             dbController.fillTableProducts();
-
             queryProcessing();
         } catch (Exception e) {
             e.printStackTrace();
@@ -25,11 +24,28 @@ public class App {
 
     }
 
+    /**
+     * Метод выводит подсказку пользователю
+     */
+    public static void printTip() {
+        System.out.println("Please, enter the command:");
+        System.out.println("- '/цена <title>'");
+        System.out.println("- '/сменитьцену <title> <cost>'");
+        System.out.println("- '/товарыпоцене <start cost> <end cost>'");
+        System.out.println("- '/exit'");
+        System.out.println("Waiting input...");
+    }
+
+    /**
+     * Консольное приложение, ждет команды от пользователя
+     * @throws IOException
+     * @throws SQLException
+     */
     public static void queryProcessing() throws IOException, SQLException {
         Scanner scanner = new Scanner(System.in);
         String command;
-        System.out.println("Please, enter the command...");
-        while (!(command = scanner.nextLine()).equals("exit")) {
+        printTip();
+        while (!(command = scanner.nextLine()).equals("/exit")) {
             if (command.startsWith("/цена")) {
                 String title = command.replace("/цена", "").trim();
                 dbController.getCostByTitle(title);
@@ -40,11 +56,11 @@ public class App {
                 dbController.changeCostByTitle(title, cost);
             } else if (command.startsWith("/товарыпоцене")) {
                 String buffer = command.replace("/товарыпоцене", "").trim();
-                int idStart = Integer.parseInt(buffer.substring(0, buffer.indexOf(" ")));
-                int idEnd = Integer.parseInt(buffer.substring(buffer.indexOf(" ") + 1).trim());
-                dbController.getProductByIntervalId(idStart, idEnd);
+                int costStart = Integer.parseInt(buffer.substring(0, buffer.indexOf(" ")));
+                int costEnd = Integer.parseInt(buffer.substring(buffer.indexOf(" ") + 1).trim());
+                dbController.getProductByIntervalId(costStart, costEnd);
             }
-            System.out.println("Please, enter the command...");
+            printTip();
         }
     }
 }
