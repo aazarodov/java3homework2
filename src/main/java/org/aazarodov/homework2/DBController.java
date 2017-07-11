@@ -84,9 +84,9 @@ public class DBController {
         ps.execute();
         ResultSet rs = ps.getResultSet();
         if (rs.next()) {
-            System.out.println("Cost '" + title + "': " + rs.getInt(1));
+            System.out.println("Цена на товар '" + title + "': " + rs.getInt(1));
         } else {
-            System.out.println("Product not found!");
+            System.out.println("Такого товара нет!");
         }
     }
 

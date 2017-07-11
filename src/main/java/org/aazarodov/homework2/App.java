@@ -28,12 +28,12 @@ public class App {
      * Метод выводит подсказку пользователю
      */
     public static void printTip() {
-        System.out.println("Please, enter the command:");
+        System.out.println("Пожалуйста, введите команду:");
         System.out.println("- '/цена <title>'");
         System.out.println("- '/сменитьцену <title> <cost>'");
         System.out.println("- '/товарыпоцене <start cost> <end cost>'");
-        System.out.println("- '/exit'");
-        System.out.println("Waiting input...");
+        System.out.println("- '/выход'");
+        System.out.println("Ожидание ввода...");
     }
 
     /**
@@ -45,7 +45,7 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         String command;
         printTip();
-        while (!(command = scanner.nextLine()).equals("/exit")) {
+        while (!(command = scanner.nextLine()).equals("/выход")) {
             if (command.startsWith("/цена")) {
                 String title = command.replace("/цена", "").trim();
                 dbController.getCostByTitle(title);
