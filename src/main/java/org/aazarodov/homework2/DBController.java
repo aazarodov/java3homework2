@@ -71,6 +71,7 @@ public class DBController {
         }
         ps.executeBatch();
         connection.setAutoCommit(true);
+        ps.close();
     }
 
     /**
@@ -88,6 +89,7 @@ public class DBController {
         } else {
             System.out.println("Такого товара нет!");
         }
+        ps.close();
     }
 
     /**
@@ -101,6 +103,7 @@ public class DBController {
         ps.setInt(1, cost);
         ps.setString(2, title);
         ps.execute();
+        ps.close();
     }
 
     /**
